@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Generation map</title>
+</head>
+
+<body style="margin: 0; padding: 0;">
+    <div id="input" style="background-color:rgba(207, 207, 207, 0.8); display: flex; justify-content: space-around;">
+        <div>
+            <label id="Relief">Relief</label><br />
+            <input type="range" id="inputRelief" name="inputRelief" min="100" max="3000" value="2000" onchange="updateText('Relief',this.value)">
+        </div>
+        <div>
+            <label id="NiveauEau">NiveauEau</label><br />
+            <input type="range" id="inputNiveauEau" name="inputNiveauEau" min="120" max="130" value="128" onchange="updateText('NiveauEau',this.value)">
+        </div>
+        <div>
+            <label id="TailleContinent">TailleContinent</label><br />
+            <input type="range" id="inputTailleContinent" name="inputTailleContinent" min="2" max="50" value="25" onchange="updateText('TailleContinent',this.value)">
+        </div>
+        <div>
+            <label>Bruit</label><br />
+            <input id="bruit" type="checkbox" id="bruit" name="bruit" value="bruit" checked>
+        </div>
+        <div>
+            <label>Smooth</label><br />
+            <input id="smooth" type="checkbox" id="smooth" name="smooth" value="smooth" checked>
+        </div>
+        <div>
+            <label>Contrast</label><br />
+            <input id="contrast" type="checkbox" id="contrast" name="contrast" value="contrast" checked>
+        </div>
+        <button id="generation" onclick="this.disabled = true,refresh()" style="margin: 10px;">Generation</button><br />
+    </div>
+
+    <div id="canvas">
+
+    </div>
+
+</body>
+
+<script>
+    refresh();
+
+    function updateText(label, val) {
+        document.getElementById(label).innerHTML = label + ": " + val;
+    }
+
+    function refresh() {
+
+
+        var relief = document.getElementById('inputRelief').value;
+        var nivEau = document.getElementById('inputNiveauEau').value;
+        var tailleContinent = document.getElementById('inputTailleContinent').value;
+
+        var InputBruit = document.getElementById("bruit").checked;
+        var InputSmooth = document.getElementById("smooth").checked;
+        var InputContrast = document.getElementById("contrast").checked;
+
+
+        document.getElementById('canvas').innerHTML = "";
+        var canvas = document.createElement("canvas");
+        canvas.height = 500;
+        canvas.width = 500;
+        document.getElementById('canvas').appendChild(canvas);
+        var octaves = [];
+
+        var context = canvas.getContext("2d");
+        var width = canvas.width;
+        var height = canvas.height;
+        var imageData = context.createImageData(width, height);
+        var imageDataModel = context.createImageData(width, height);
+
+        function createCanvas(imageData, taille) {
+            var newCanvas = document.createElement("canvas");
+            newCanvas.height = taille;
+            newCanvas.width = taille;
+            newCanvas.style.marginRight = "1px";
+            //newCanvas.style.border = "1px solid red";
+            var newContext = newCanvas.getContext("2d");
+            newContext.putImageData(imageData, 0, 0);
+            document.getElementById('canvas').insertBefore(newCanvas, document.getElementById('canvas').lastChild);
+        }
+
+        function moyenneVoisin(map, x, y, entourage) {
+            var total = 0;
+            var somme = 0;
+            var voisins = [];
+            for (var xvoisin = -entourage; xvoisin <= entourage; xvoisin++) {
+                for (var yvoisin = -entourage; yvoisin <= entourage; yvoisin++) {
+                    // console.log(xvoisin,yvoisin);
+                    voisins.push([x + xvoisin, y + yvoisin]);
+                }
+            }
+            /*var voisins = [ [x - 1, y - 1], [x, y - 1], [x + 1, y - 1],
+                            [x - 1, y],     [x, y],     [x + 1, y],
+                            [x - 1, y + 1], [x, y + 1], [x + 1, y + 1]
+            ]*/
+            voisins.forEach(voisin => {
+                if (voisin[0] >= 0 && voisin[0] < width && voisin[1] >= 0 && voisin[1] < height) {
+                    somme += map[voisin[0]][voisin[1]];
+                    total++;
+                }
+            });
+
+            return (somme / total);
+        }
+
+        function changeImageData(map) {
+            var reponse = imageDataModel;
+            for (var x = 0; x < width; x++) {
+                for (var y = 0; y < height; y++) {
+                    var pixelindex = (y * width + x) * 4;
+                    reponse.data[pixelindex] = map[x][y];
+                    reponse.data[pixelindex + 1] = map[x][y];
+                    reponse.data[pixelindex + 2] = map[x][y];
+                    reponse.data[pixelindex + 3] = 255;
+                }
+            }
+            return reponse
+        }
+
+        function createRandomMap() {
+            var tab2D = []
+            for (var x = 0; x < width; x++) {
+                var ligne = [];
+                for (var y = 0; y < height; y++) {
+                    var pixel = Math.random() * 255;
+                    ligne.push(pixel);
+                }
+                tab2D.push(ligne);
+            }
+            return tab2D;
+        }
+
+
+        function smooth(map, nb, puissance) {
+            for (var i = 0; i < nb; i++) {
+                for (var x = 0; x < width; x++) {
+                    for (var y = 0; y < height; y++) {
+
+                        //moyenneVoisin(x, y);
+                        map[x][y] = moyenneVoisin(map, x, y, puissance);
+
+                    }
+                }
+                octaves.push(changeImageData(map, imageDataModel));
+                InputSmooth && createCanvas(changeImageData(map, imageDataModel), 100);
+            }
+            return map;
+        }
+
+
+        function contrastImage(imageData, contrast, luminosite) {
+            contrast = (contrast / 100) + 1;
+            var intercept = luminosite * (1 - contrast);
+            for (var i = 0; i < imageData.data.length; i += 4) {
+                imageData.data[i] = imageData.data[i] * contrast + intercept;
+                imageData.data[i + 1] = imageData.data[i + 1] * contrast + intercept;
+                imageData.data[i + 2] = imageData.data[i + 2] * contrast + intercept;
+            }
+            return imageData;
+        }
+
+        function color(imageData) {
+            for (var i = 0; i < imageData.data.length; i += 4) {
+                if ((imageData.data[i]) <= 100) {
+                    imageData.data[i + 2] = 255;
+                }
+                if ((imageData.data[i]) > 100 && (imageData.data[i]) <= 120) {
+                    imageData.data[i] = 255;
+                    imageData.data[i + 1] = 255;
+                }
+                if ((imageData.data[i]) > 120 && (imageData.data[i]) <= 140) {
+                    imageData.data[i + 1] = 255;
+                }
+                if ((imageData.data[i]) > 140 && (imageData.data[i]) <= 150) {
+                    imageData.data[i] = 60;
+                    imageData.data[i + 1] = 200;
+                    imageData.data[i + 2] = 60;
+                }
+                if ((imageData.data[i]) > 150 && (imageData.data[i]) <= 180) {
+                    imageData.data[i] = 50;
+                    imageData.data[i + 1] = 120;
+                    imageData.data[i + 2] = 60;
+
+                }
+                if ((imageData.data[i]) > 180 && (imageData.data[i]) <= 200) {
+                    imageData.data[i] = 70;
+                    imageData.data[i + 1] = 50;
+                    imageData.data[i + 2] = 0;
+                }
+                if ((imageData.data[i]) > 200 && (imageData.data[i]) <= 215) {
+                    imageData.data[i] = 50;
+                    imageData.data[i + 1] = 20;
+                    imageData.data[i + 2] = 0;
+                }
+            }
+            return imageData;
+        }
+
+        function generation() {
+            var map = createRandomMap();
+            InputBruit && createCanvas(changeImageData(map), 100);
+            var mapSmooth = smooth(map, tailleContinent, 2); // map,boucle,puissanceVoisinage
+            var ImageDataSmooth = changeImageData(mapSmooth);
+            var ImageDataContrast = contrastImage(ImageDataSmooth, relief, nivEau); //image,puissanceContrast,luminosité
+            InputContrast && createCanvas(ImageDataContrast, 500);
+            var ImageDataColor = color(ImageDataContrast);
+            context.putImageData(ImageDataColor, 0, 0);
+            document.getElementById('generation').disabled = false;
+        }
+
+        generation();
+    };
+</script>
+
+</html>

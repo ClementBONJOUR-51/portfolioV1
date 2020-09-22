@@ -1,0 +1,171 @@
+<html>
+<head>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+
+		html{height: 100%;}
+
+		body{
+					/*border : 2px red solid;*/
+					height: 99%;
+					background : #0D343A;
+					background: linear-gradient(#00221C,#00A385);
+					overflow: hidden;
+				}
+
+		.drop {	
+			background:linear-gradient(rgba(255,255,255,0) 65%,#FFFFFF);
+			width: 1px;
+			height: 100px;
+			position: absolute;
+			border-bottom-left-radius: 5px;
+		}
+
+
+
+		.ploop {
+			/*background-color: white;*/
+			color: white;
+			position: absolute;
+		}
+
+		#souris{
+			position: absolute;
+			height: 100px;
+			width: 100px;
+			background-image: url(umbrella.png);
+			
+		}
+
+
+
+
+
+
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+	<script type="text/javascript">
+		var nbDrop = 50;
+
+		function randRange(minNum, maxNum){
+			return (Math.floor(Math.random()*(maxNum-minNum + 1)) + minNum);
+		}
+
+		function randRangeFloat(max,min){
+			return Math.random() * (max - min) + min;
+		}
+
+		function spawn(object){
+			var dropLeft = randRange(0,document.body.clientWidth);
+			var dropTop = randRange(-1500,-100);
+			object.css('visibility','visible');
+			object.css('width',randRangeFloat(10,0.005));
+			object.css('left',dropLeft);
+			object.css('top',dropTop);
+			fall(object);
+
+			//
+			id = object.attr('id');
+			setTimeout(function(){$('#ploopOF'+id).remove()},1000);
+		}
+
+		function createRain(){
+			for(i=1;i<nbDrop;i++){
+				$('.rain').append('<div class="drop" id="drop'+i+'"></div>');
+				spawn($('#drop'+i));
+			}
+		}
+
+		function fall(object){
+				var multDuration = parseInt(object.css('width'))*500;
+
+					object.animate({
+											top: $("body").height()
+											},{
+												duration : randRange(1800,2000)-multDuration,
+												easing: "linear",
+												complete:function(){
+																					object.css('visibility','hidden');
+																					ploop(object);
+																					spawn(object);
+																}
+												});
+		}
+
+		function ploop(object){
+
+			y = object.css('left');
+			id = object.attr('id');
+			nbPloop = $('.ploop').length;
+
+
+			var divploop = '<div class="ploop" id="ploopOF'+id+'" style="visibility:hidden">*</div>';
+			$('.rain').append(divploop);
+
+			setTimeout(function(){$('#ploopOF'+id).remove();}, 1000);
+			$('#ploopOF'+id).css('top',$("body").height());
+			$('#ploopOF'+id).css('left',y);
+			//console.log($('#ploopOF'+id).css('top'));
+			$('#ploopOF'+id).css("visibility","visible");
+
+			$('#ploopOF'+id).animate({
+											top: '-=4%',
+											opacity : 0
+											},{
+												duration : 200,
+												easing: "linear",
+												complete:function(){
+													$('#ploopOF'+id).css("visibility","hidden");
+													$('#ploopOF'+id).remove();
+																}
+												});
+
+		}
+
+
+
+		function souris(e){
+			$("#souris").css('top',e.clientY-(parseInt($("#souris").css('height'))/2));
+			$("#souris").css('left',e.clientX-(parseInt($("#souris").css('width'))/2));
+			
+		}
+
+
+		/*function collision(){
+			$('.drop').each(function(drop){
+			//console.log($('.drop:nth-child('+drop+')'));
+			var topDrop = parseInt($('.drop:nth-child('+(drop+1)+')').css('top'));
+			var leftDrop = parseInt($('.drop:nth-child('+(drop+1)+')').css('left'));
+
+			var topSouris = parseInt($('#souris').css('top'));
+			var gaucheSouris = parseInt($('#souris').css('left'));
+			var droiteSouris = parseInt($('#souris').css('left')) + parseInt($('#souris').css('width'));
+
+
+			if(topDrop > topSouris && leftDrop <droiteSouris && leftDrop>gaucheSouris){
+				$('.drop:nth-child('+(drop+1)+')').remove();
+			}
+			});
+			setTimeout("collision()", 500);
+		}*/
+
+		
+
+
+
+
+	</script>
+
+
+
+</head>
+<body onload="createRain();" onmousemove="souris(event)"> 
+	<section class="rain"></section>
+	<div id="souris"></div>
+</body>
+</html>

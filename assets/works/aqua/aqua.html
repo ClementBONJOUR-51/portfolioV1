@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Aqua</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<style type="text/css">
+		html{
+			/*overflow: hidden;*/
+		}
+		body{
+			height: 500%;
+			width: 100%;
+			background : linear-gradient(#01afc6, #000000);
+		}
+		#perso{
+					position: absolute;
+					top: 500px;
+					left: 500px;
+				}
+		#imagePerso {
+						height: 20px;
+						width: 50px;
+						/*background-color: red;*/
+						background-image: url("poisson.png");
+						/*transition: transform 0.1s;*/
+					}
+
+		.poisson{
+					position: absolute;
+		}
+		.imagePoisson{
+						height: 20px;
+						width: 50px;
+		}
+
+		#joystick-container{
+    	display: inline-block;
+			visibility: hidden;
+			position: sticky;
+			background-color: rgba(255,255,255,0.8);
+			border: 1px black solid;
+			border-radius: 50%;
+			pointer-events:none;
+		}
+		#joystick{
+    	cursor: crosshair;
+    	pointer-events:none;
+		}
+
+		#directionLine{
+			margin :0;
+			padding: 0;
+			height: 0px;
+			width: 2px;
+			background-color: black;
+			top: 50%;
+			left: 50%;
+			position: absolute;
+			transform-origin: top left;
+			/*transform: rotate(45deg);*/
+		}
+	</style>
+</head>
+
+
+
+
+
+
+<body><!-- *********************************************************************************** -->
+
+	<div id="perso"><div id="imagePerso"></div></div>
+
+	<div id="joystick-container"><div id="joystick"></div><hr id="directionLine"></hr></div>
+
+</body><!-- *********************************************************************************** -->
+
+
+
+
+	<script type="text/javascript">
+
+		$('html, body').animate( { scrollTop: 0 }, 20 ); // scroll auto 0 debut
+
+
+		//Variable
+
+		var currentX,currentY; // dernière position souris
+		$('#joystick-container').click(false); // disparition joystick au debut
+		$("body").height($(document).height()*10);
+
+		var initX = 0; // position dernier click souris
+		var initY = 0; // ''
+
+
+
+		var mousedownID = -1; // souris enfoncé ?
+		var partiePage = 1;
+
+		var vitesseMax = 30;
+
+
+		var nbPoisson = 10; // init
+		nbCurrentPoisson = 0;
+
+
+		$("#joystick").height(vitesseMax*2);
+  	$("#joystick").width(vitesseMax*2);
+  	var halfHeightJoystick = $("#joystick").height() / 2 ; // moitié de la taille du joystick
+		var halfWidthJoystick = $("#joystick").width() / 2;
+
+		createAllPoisson();
+
+
+
+
+
+
+
+
+
+
+		window.addEventListener('mousemove',function(e){
+			currentX = e.x;
+			currentY = e.y;
+		});
+
+
+
+		$(document).mousedown(function(event){
+				if(event.buttons === 1) {
+																			initX=window.event.clientX; // position click souris
+																			initY=window.event.clientY; // position click souris
+																			$("#joystick-container").css('visibility', 'visible'); // le joystick deviens visible
+																			$("#joystick-container").css('top',(initY - halfHeightJoystick)+'px'); // le joystick viens se placer à la position du click
+																			$("#joystick-container").css('left',(initX - halfWidthJoystick)+'px'); // le joystick viens se placer à la position du click
+																			//console.log($("#joystick-container").position());
+																			if(mousedownID==-1){mousedownID = setInterval(whilemousedown, 100)};
+																			$("#imagePerso").css("background-image", "url(poisson.gif)");
+				}
+		});
+
+
+		$(document).mouseup(function(event){
+																			$("#joystick-container").css('visibility', 'hidden'); // si le click est lever le joystick disparait
+																			//console.clear();
+																			 if(mousedownID!=-1) {
+																			 	clearInterval(mousedownID);
+																			 	mousedownID=-1;
+																			 	$("#directionLine").height(0);
+																			 	$("#imagePerso").css("background-image", "url(poisson.png)");
+																			 }
+
+		});
+
+
+
+		function move(x,y){
+			var vitesse = 1;
+			var vitAnim = 100;
+			var positionPerso =  $("#perso").position();
+			var persoX = positionPerso.left;
+			var persoY = positionPerso.top;
+			var limiteX = x;
+			var limiteY = y;
+			var topScroll  = window.pageYOffset || document.documentElement.scrollTop;
+			var leftScroll  = window.pageXOffset || document.documentElement.scrollLeft;
+			if(Math.abs(x)>vitesseMax){limiteX = vitesseMax*Math.sign(x);}
+			if(Math.abs(y)>vitesseMax){limiteY = vitesseMax*Math.sign(y);}
+
+			if(persoX>window.innerWidth-50){
+				$("#perso").animate({left:  window.innerWidth-150},{ duration: 1000, queue: false });
+			}
+			else if (persoX<0){
+				$("#perso").animate({left:  100},{ duration: 1000, queue: false });
+			}
+			else if (persoY<0){
+				$("#perso").animate({top:  100},{ duration: 1000, queue: false });
+			}
+
+			else{
+				//perso
+				//$("#perso").stop(); // ???
+				$("#perso").animate({left: (persoX + limiteX*vitesse)},{ duration: vitAnim, queue: false });
+				$("#perso").animate({top:  (persoY + -1*limiteY*vitesse)},{ duration: vitAnim, queue: false });
+
+
+
+				//page
+				if(persoY>(window.innerHeight*partiePage)){
+					$('html, body').animate( { scrollTop: window.innerHeight*partiePage }, 200 );
+					partiePage++;
+					console.log(partiePage);
+				}
+				if (persoY<window.innerHeight*(partiePage-1)){
+					partiePage--;
+					$('html, body').animate( { scrollTop: window.innerHeight*(partiePage-1) }, 200 );
+					console.log(partiePage);
+				}
+				// ou alors
+				//$('html, body').animate( { scrollTop: (persoY-(window.innerHeight/2)) }, vitesseMax );
+			}
+		}
+
+			
+		
+
+		function actuJoystickEtPerso(diffX,diffY){
+			  var degree =(Math.atan2(diffY,diffX)*180 / Math.PI)+180;
+  			var distance = Math.sqrt(   Math.pow((diffX - 0),2) + Math.pow((diffY - 0),2)       );
+  			//console.log(distance);
+  			//console.log(degree);
+  			//JOYSTICK:
+  			$("#directionLine").css({ WebkitTransform: 'rotate(' + (degree+90) + 'deg)'});
+  			if(distance<vitesseMax){$("#directionLine").height(distance);}
+  			else{$("#directionLine").height(vitesseMax);}
+  			$("#joystick").height(vitesseMax*2);
+  			$("#joystick").width(vitesseMax*2);
+  			//PERSO
+  			$("#imagePerso").css({ WebkitTransform: 'rotate(' + degree + 'deg)'});
+
+		}
+
+
+			function whilemousedown() {
+  			
+  			var diffX = (currentX -  joystick.getBoundingClientRect().left) - halfWidthJoystick;
+  			var diffY = (currentY -  joystick.getBoundingClientRect().top) - halfHeightJoystick;
+
+  			actuJoystickEtPerso(diffX,diffY);
+  			//console.log("X="+diffX+" Y="+diffY+"");
+  			move(diffX,diffY*-1);
+		}
+
+		function createPoisson(lastNbPoisson){
+			console.log("creat poisson");
+
+			var randomPositionTop = Math.floor(Math.random() * (document.body.offsetHeight-150)) + 100;
+			var randomPositionLeft = Math.floor(Math.random() * (window.innerWidth-150)) + 100;
+
+			var nouveauPoisson = document.createElement("div");
+			nouveauPoisson.setAttribute("id", lastNbPoisson);
+			nouveauPoisson.setAttribute("class", "poisson");
+			var nouveauImagePoisson = document.createElement("div");
+			nouveauImagePoisson.setAttribute("id", lastNbPoisson+"Image");
+			nouveauImagePoisson.setAttribute("class", "imagePoisson");
+
+			nouveauPoisson.appendChild(nouveauImagePoisson);
+
+			nouveauImagePoisson.style.backgroundImage = "url('poisson.png')";
+
+			nouveauPoisson.style.top = randomPositionTop+"px";
+			nouveauPoisson.style.left = randomPositionLeft+"px";
+
+			document.body.appendChild(nouveauPoisson);
+		}
+
+		function createAllPoisson(){
+			if(nbCurrentPoisson < nbPoisson){
+				nbCurrentPoisson++;
+				createPoisson(nbCurrentPoisson);
+				createAllPoisson();
+			}
+		}
+
+		function addAnimationRandomPoisson(Poisson){
+			
+		}
+
+
+
+	</script>
+
+
+</html>

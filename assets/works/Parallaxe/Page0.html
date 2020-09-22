@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" type="text/css" media="all">
+	<script type="text/javascript"></script>
+</head>
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+
+*
+{
+	padding: 0;margin: 0;border:0;
+}
+
+body{background-color: #009000;margin: 0;padding: 0;}
+
+
+
+
+@keyframes apparition {
+
+ 				0%	{opacity: 0;}
+ 				30% {opacity: 0;}    
+ 				 100%{opacity: 1;}
+      		
+
+					}
+
+
+
+#parallax
+{
+	background: url("images/parallax.png") fixed no-repeat;
+	background-size: 100% 150%;
+	animation: apparition 2s ;
+	z-index: -20;
+
+}
+#parallaxA
+{
+	background: url("images/parallax.png") fixed no-repeat;
+	background-size: 100% 150%;
+	animation: apparition 2s ;
+	z-index: -20;
+
+}
+#parallaxB
+{
+	background: url("images/parallaxB.png") fixed no-repeat;
+	background-size: 100% 150%;
+	animation: apparition 2s ;
+	z-index: -20;
+
+}
+#parallaxC
+{
+	background: url("images/parallaxCGIF.gif") fixed no-repeat;
+	background-size: 100% 150%;
+	animation: apparition 2s ;
+	z-index: -20;
+
+}
+#parallaxD
+{
+	background: url("images/parallax.png") fixed no-repeat;
+	background-size: 100% 150%;
+	animation: apparition 2s ;
+	z-index: -20;
+
+}
+
+#pont{
+	position:relative;
+
+	background: url('images/passerelle.png') no-repeat ;
+	background-size: 100% 100%;
+	width: 120vw;
+	height: 25vh;
+	top: 160vh;
+	transition: top 600ms linear;
+}
+#espace_pont
+{
+	/*background-color: rgba(0,255,0,0.5);*/
+	position: absolute;
+	height:140vmax;width: 100vw;
+	top: 140vh;
+	
+}
+#cables{
+	position:relative;
+
+	background: url('images/cables.png') no-repeat ;
+	background-size: 100% 100%;
+	width: 120vw;
+	height: 25vh;
+	top: 160vh;
+	transition: top 600ms linear;
+}
+#espace_cables
+{
+	/*background-color: rgba(255,0,0,0.5);*/
+	position: absolute;
+	height:150vmax;width: 100vw;
+	top: 0vh;
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#background_video
+{
+	position: fixed;right: 0; bottom: 0;
+	min-width: 100%;min-height: 100%;
+	
+	z-index: -100;
+	background-size: cover;
+}
+#bouton
+{
+	height: 4vmax;width: 4vmax;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 35vh;
+	transform: translateY(-50%);
+	transition: height 200ms, width 200ms;
+	
+
+
+}
+#bouton:hover
+{
+	height: 4.5vmax;width: 4.5vmax;
+}
+#fleche_bouton{height: 75%;margin-left: 15%;margin-top: 13%; z-index: -8;}
+
+#rideau
+{
+	background-color: rgba(255,255,255,0.7);
+	position: fixed;right: 0; bottom: 0;
+	min-width: 100%;min-height: 100%;
+	max-width:auto ;max-height: 115%;
+	z-index: 100;
+	background-size: cover;
+}
+#rond_accueil
+{
+	width: 40vmax;
+	height: 40vmax;
+	margin-left: auto;margin-right: auto;margin-top:8vh;
+
+	background-color: rgba(255,255,255,0);
+	border:0.5vmax solid red;
+	border-radius: 100% 100%;
+	overflow-wrap:break-word;
+	text-align: center;
+}
+
+#titre_message_accueil
+{
+	font-family: "Courier"; 
+	font-size: 5vmax;
+	color: red;
+	
+	margin-top:20%;
+}
+#message_accueil
+{
+	font-size: 0.9vmax;
+	margin-left: 10%;margin-right: 10%;
+	color: red;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#menu
+{
+	z-index: 100;
+	position: fixed;
+	margin: 1vmax;
+	margin-left: 0;
+
+	background-color: white;
+	width: 6vmax;
+	height:6vmax;
+
+	display: flex;
+	flex-direction: column;
+
+	transition: height 500ms;
+	animation: apparition 1s ;
+   	animation-direction: alternate;
+    animation-timing-function: linear;
+	}
+
+#menu:hover
+{
+	height: 45vmax;
+}
+
+.blocks_menu
+{
+	height: 6vmax;
+	width: 6vmax;
+	transition: width 200ms, height 200ms;
+	text-align: center;
+	font-size: 2vmax;
+
+}
+.blocks_menu:hover
+{
+	height: 7vmax;
+	width: 7vmax;
+}
+
+#blockA
+{
+	background-color: red;
+	min-height: 6vmax;
+
+}
+#blockB
+{
+	background-color:orange;
+}
+#blockC
+{
+	background-color: yellow;
+}
+#blockD
+{
+	background-color: green;
+}
+#blockE
+{
+	background-color: blue;
+}
+#blockF
+{
+	background-color: purple;
+}
+
+
+
+
+#roulette
+{
+	position: fixed;
+	margin-left: 91%;margin-top: 50vh;
+	height: 40%;width: 10%;
+	transform: translateY(-50%);
+
+
+		animation: apparition 3s ;
+
+    }
+
+
+
+
+
+
+
+
+.page
+{
+	z-index: 1;
+	height: auto;
+	width: 100%;
+	text-align: center;
+	font-size: 500%;
+	animation: apparition 2s;
+	padding-top: 4vmax;padding-bottom: 4vmax;
+
+	 box-shadow: 0px -8px #505050; 
+
+}
+#pageA
+{
+ background-color: rgba(255,255,255,0);
+ height: 110vh;
+ padding: 0;
+
+ z-index: 1;
+}
+#pageB
+{
+background-color: orange;
+}
+#pageC
+{
+background-color: yellow;
+}
+#pageD
+{
+background-color: green;
+}
+#pageE
+{
+background-color: blue;
+}
+#pageF
+{
+background-color: purple;
+
+}
+
+
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<body>
+
+<video id="background_video" autoplay="true" loop="true" preload="auto">
+<source src="images/background.mp4" type="video/mp4">
+</video>
+
+
+<div id="rideau">
+
+<div id="rond_accueil">
+<p id="titre_message_accueil">Bienvenue</p>
+
+<p id="message_accueil">Vous êtes actuellement sûr le site de '...' et nous vous souhaitons une bonne visite </p>
+<img id="bouton" onclick="javascript:accueil('bouton')" src="images/bouton.png">
+</div>
+</div>
+
+
+
+
+	<div id="menu">
+
+				<div class="blocks_menu" id="blockA" onclick="javascript:menu('menu')"><img style="height: 60%;margin-top:20%;" src="images/M.png"></div>
+				<div class="blocks_menu" id="blockB"></div>
+				<div class="blocks_menu" id="blockC"></div>
+				<div class="blocks_menu" id="blockD"></div>
+				<div class="blocks_menu" id="blockE"></div>
+				<div class="blocks_menu" id="blockF"></div>
+	</div>
+	
+
+	<img id="roulette" src="images/rouletteGIF.gif">
+
+<div id="corp2page">
+
+
+
+										<section id="parallax"><div style="height:1vmax;"></div></section> 	
+
+<div class="page" id="pageA"><img style="height: 30vmax;" src="images/Mon_Blog.png"></div>
+
+																								<section id="parallax"><div style="height:10vmax;"></div></section> 
+
+<div class="page" id="pageB"><h3>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br></h3></div>
+
+																								<section  id="parallaxA"><div style="height: 10vmax;"></div></section> 
+
+
+
+
+
+<div class="page" id="pageC"><h3>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br></h3>   </div>
+
+																									<section id="parallaxB"><div style="height: 10vmax;"></div></section> 
+
+<div class="page" id="pageD"><h3>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br></h3></div>
+
+
+
+
+
+
+																									<section  id="parallaxC"><div style="height: 10vmax;"></div></section> 
+
+<div class="page" id="pageE"><h3>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br></h3></div>
+
+			
+																									<section id="parallaxD"><div style="height: 15vmax;"></div></section> 
+
+<div class="page" id="pageF"><h3>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br>ABC</br></h3></div>
+
+</div>
+
+
+
+
+
+<div id="espace_pont"><div id="pont"></div></div>
+<div id="espace_cables"><div id="cables"></div></div>
+
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+
+
+document.getElementById('background_video').volume=0;
+document.getElementById('menu').style.display="none";
+document.getElementById('corp2page').style.display="none";
+document.getElementById('roulette').style.display="none";
+
+
+
+
+
+function accueil(id)
+{
+	document.getElementById('bouton').style.display="none";
+	document.getElementById('rideau').style.display="none";
+	document.getElementById('menu').style.display="flex";
+
+document.getElementById('corp2page').style.display="block";
+document.getElementById('roulette').style.display="block";
+
+}
+
+
+
+
+
+var body = document.querySelector('body');
+var block = document.querySelector('#pont');
+var block = document.querySelector('#cables');
+
+
+
+
+window.addEventListener('scroll',function(){
+
+	if (window.pageYOffset >= 0) {
+
+		document.getElementById('pont').style.top =   100-(  (window.pageYOffset*100)/ (body.offsetHeight-window.innerHeight+block.offsetHeight))  +'%' ;
+
+		document.getElementById('cables').style.top =   100-(  (window.pageYOffset*100)/ (body.offsetHeight-window.innerHeight+block.offsetHeight))  +'%' ;
+
+	}
+
+
+		console.log('pixel haut de page',window.pageYOffset);
+			console.log('hauteur global en pixel',body.offsetHeight);
+			console.log('pourcentage de descante', (window.pageYOffset*100)/body.offsetHeight);
+			console.log('pourcentage manquant fin', 100-(  (window.pageYOffset*100)/body.offsetHeight  ));
+			console.log('qui est égale à ', window.innerHeight);
+
+	
+})
+
+</script>
+
+
+</html>
+
